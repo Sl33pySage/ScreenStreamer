@@ -18,6 +18,37 @@ import android.util.Log
 // *  With complete stride/pixel layout info
 // This is an excellent starting point.
 class ScreenCaptureService : Service() {
+  override fun onCreate() {
+    super.onCreate()
+    startForegroundService()
+  }
+
+
+  private fun startForegroundService() {
+    val channelId = "screen_capture_channel"
+
+
+    val channel = NotificationChannel(
+        channelId,
+        "Screen Capture",
+        NotificationManager.IMPORTANCE_LOW
+        )
+    val manager = getSystemservice(NotificationManager::class.java)
+    manager.createNotificationChannel(channel)
+
+
+    val notif = Notification.Builder(this, channelId)
+        .setContentTitle("Screen Capture running")
+        .setSmallIcon(android.R.drawable.ic_media_play)
+        .build()
+
+
+    startForeground(1, notif)
+  }
+
+
+
+
   private var projection: MediaProjection? = null
 
 
@@ -95,9 +126,4 @@ imageReader.setOnImageAvailableListener({ reader ->
 
 
 override fun onBind(intent: Intent?): IBinder? = null
-}
-
-
-
-
 }
